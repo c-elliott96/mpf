@@ -4,16 +4,38 @@
 # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
 # rubocop:disable Metrics/MethodLength, Metrics/PerceivedComplexity
 
-
 # Defines instance method to find MP(s) of an input string by applying
 # Manacher's Algorithm
+# TODO Move manacher's algorithm into the initializer
 class MaximalPalindrome
-  def self.manacher(string)
-    # From
+  def initialize
+    @maximal_palindromes = []
+    @prefix_palindromes = []
+    @suffix_palindromes = []
+  end
+
+  def maximal_palindromes
+    @maximal_palindromes
+  end
+
+  def prefix_palindromes
+    @prefix_palindromes
+  end
+
+  def suffix_palindromes
+    @suffix_palindromes
+  end
+
+  def manacher(string)
+    # This method takes in a string and computes the set radii of all
+    # palindromes of the string. We store this set as MP(s). We also
+    # simultaneously compute the prefix and suffix palindromes of MP(s).
+    #
+    #From
     # https://en.wikipedia.org/wiki/Longest_palindromic_substring#Manacher's_algorithm
 
-    # Make sure our input is not nil
-    raise ArgumentError, "Input cannot be nil" if string.nil?
+    # Make sure input is valid string
+    raise ArgumentError, "Input must be string-like" unless string.respond_to?(:chars)
 
     # s' = s with a bogus character ('|') inserted between each character
     # (including outer boundaries)
@@ -23,6 +45,7 @@ class MaximalPalindrome
     radii = [0] * s_prime.length
     center = 0
     radius = 0
+
     while center < s_prime.length
       # Determine the longest palindrome from center-radius to center+radius
       while center - (radius + 1) >= 0 &&
@@ -71,6 +94,19 @@ class MaximalPalindrome
       end
     end
 
+    # Calculate prefix_pals and suffix_pals
+    # for each radius, add to prefix_palindromes if
+    # center - radius = 0
+    # and add to suffix_palindromes if
+    # center + radius = s_prime.len - 1
+    radii.each_with_index do |radius, center|
+      @prefix_palindromes.append([center, radius]) unless center - radius != 0
+      @suffix_palindromes.append([center, radius]) unless center + radius != s_prime.length - 1
+    end
+
+    # For now, set @maximal_palindromes to radii and just return radii
+    # so tests pass. ... Update tests later.
+    @maximal_palindromes = radii
     radii
   end
 end
