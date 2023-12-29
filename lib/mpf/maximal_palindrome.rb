@@ -10,8 +10,12 @@
 class MaximalPalindrome
   def initialize
     @maximal_palindromes = []
+    @mp = Hash.new { |h,k| h[k] = [] } # We may not need a hash of arrays... 1x2
+                                       # array would probably work fine
     @prefix_palindromes = []
     @suffix_palindromes = []
+    @maximal_palindromic_lengths = []
+    @u = []
   end
 
   def maximal_palindromes
@@ -24,6 +28,81 @@ class MaximalPalindrome
 
   def suffix_palindromes
     @suffix_palindromes
+  end
+
+  def maximal_palindromic_lengths
+    @maximal_palindromic_lengths
+  end
+
+  def u
+    @u
+  end
+
+  def set_u
+    # Now we define the list U(s) such that for each 1 ≤ i ≤ n, U(s)[i] stores
+    # the position j such that j + 1 is the starting position of a maximal palindromic
+    # factors ending at i and j is the end of another maximal palindromic substring.
+    # Clearly, this can be easily computed once we have MPL(s) computed.
+    # U[i][j] = i − MPL(s)[i][j]
+  end
+
+  def mp
+    @mp
+  end
+
+  def set_mp
+    @maximal_palindromes.each_with_index do |radius, index|
+      # mp element is (c, r) as defined in MPF paper
+
+      # next unless radius != 0
+
+      # commenting out for now, to follow the paper's calculation of MPL
+      # if index % 2 == 0 && index != @maximal_palindromes.length - 1
+      #   if @maximal_palindromes[index + 1] > radius
+      #     next
+      #   end
+      # else
+      #   if @maximal_palindromes[index - 1] > radius
+      #     next
+      #   end
+      # end
+
+      # @mp.append([center(index), radius])
+
+      @mp[center(index)].append(radius)
+    end
+  end
+
+  def set_mpl
+    # Tricky. TODO
+  end
+
+  # def remove_redundant_values
+  #   # Creates a new array that only stores the longest palindrome radii and
+  #   # their indices
+  #   cleaned_up_maximal_pals = []
+  #   max_radius = 0
+  #   max_index = 0
+  #   @maximal_palindromes.each_with_index do |radius, index|
+  #     if radius == 0 && index != 0 && index != @maximal_palindromes.length
+  #       cleaned_up_maximal_pals.append([max_index, max_radius])
+  #       max_radius = 0
+  #       max_index = index
+  #       next
+  #     end
+
+  #     if radius > max_radius
+  #       max_radius = radius
+  #       max_index = index
+  #     end
+  #   end
+  #   cleaned_up_maximal_pals
+  # end
+
+  def center(manacher_index)
+    # manacher_index is simply an index of the output of manacher()
+    # calculate the center (from MPF paper) of the original input
+    manacher_index / 2
   end
 
   def manacher(string)
