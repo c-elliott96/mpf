@@ -20,6 +20,19 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 TODO: Write usage instructions here
 
+## Docker setup
+If you'd like to update the Gemfile.lock, first remove it:
+`rm Gemfile.lock`
+
+Then, create a dummy container:
+`docker create --name mpf mpf`
+
+Then use `docker cp` to move the file from the container to the local filesystem:
+`docker cp mpf:Gemfile.lock .`
+
+Then, finally, remove the running container:
+`docker rm -f mpf`
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
