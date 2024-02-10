@@ -4,6 +4,6 @@ services:
     build:
       context: .
       args:
-        # APP_HOME: /mpf
-        RUBY_VERSION: '3.0.6'
+        APP_HOME: /mpf
+        RUBY_VERSION: '3.3.0'
     image: mpf
